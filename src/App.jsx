@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Home, Users, BarChart, UserCircle, Save, Trash2, LogOut, CheckCircle, Lock, 
   User, GraduationCap, FileText, Sparkles, Layers, ClipboardList, CalendarDays, 
-  Wand2, Pointer, AlertCircle, LayoutDashboard, Menu, Bell, Calendar, Printer, X, Download
+  Wand2, Pointer, AlertCircle, LayoutDashboard, Menu, Bell, Calendar, Printer, X, Download,
+  ArrowRight, ArrowLeft, ShieldCheck, Target, HeartHandshake, CheckSquare, Info
 } from 'lucide-react';
 
 // --- INTEGRASI FIREBASE ---
@@ -292,6 +293,7 @@ export default function App() {
   // =========================================================================
   const [fbUser, setFbUser] = useState(null); 
   const [isAppLoading, setIsAppLoading] = useState(true);
+  const [showLandingPage, setShowLandingPage] = useState(true);
   
   // Persistence State Login menggunakan LocalStorage
   const [user, setUser] = useState(() => {
@@ -302,6 +304,11 @@ export default function App() {
       return null;
     }
   }); 
+
+  // Skip Landing Page if user is already logged in from previous session
+  useEffect(() => {
+    if (user) setShowLandingPage(false);
+  }, [user]);
 
   const [activeTab, setActiveTab] = useState('home');
 
@@ -539,6 +546,7 @@ export default function App() {
   const handleLogout = () => { 
     setUser(null); 
     localStorage.removeItem('akpd_user_session');
+    setShowLandingPage(false); // Jangan ke landing page saat logout, langsung ke form login
     setActiveTab('home'); 
     setLoginType('siswa');
     setAdminPin('');
@@ -719,6 +727,110 @@ export default function App() {
   // =========================================================================
   // 5. KOMPONEN RENDER (SUB-VIEWS)
   // =========================================================================
+
+  function renderLandingPage() {
+    return (
+      <div className="min-h-screen bg-slate-50 font-sans text-slate-800 animate-in fade-in">
+        {/* Header */}
+        <header className="bg-white shadow-sm sticky top-0 z-50">
+          <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <BrandLogo className="w-8 h-8" />
+              <span className="font-bold text-xl tracking-tight text-[#002147]">E-AKPD</span>
+            </div>
+            <button onClick={() => setShowLandingPage(false)} className="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center transition-colors">
+              Mulai Login <ArrowRight className="w-4 h-4 ml-1" />
+            </button>
+          </div>
+        </header>
+
+        <main className="max-w-6xl mx-auto px-6 py-12 space-y-16">
+          {/* Hero Section */}
+          <section className="bg-gradient-to-br from-[#002147] to-blue-800 rounded-3xl p-10 md:p-16 text-center text-white shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-400 opacity-20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+            
+            <div className="relative z-10 max-w-3xl mx-auto space-y-6">
+              <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full border border-white/20 text-sm font-semibold backdrop-blur-sm">
+                <Sparkles className="w-4 h-4 text-blue-300" /> Angket Kebutuhan Peserta Didik
+              </div>
+              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">Pahami Dirimu, <br/>Rencanakan Masa Depanmu.</h1>
+              <p className="text-blue-100 text-lg md:text-xl leading-relaxed">
+                AKPD membantu kami (Guru BK) untuk memahami masalah, potensi, dan kebutuhanmu agar kami dapat memberikan layanan bimbingan yang tepat, seru, dan relevan dengan kehidupanmu.
+              </p>
+              <div className="pt-4">
+                <button onClick={() => setShowLandingPage(false)} className="bg-white text-blue-800 px-8 py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 text-lg flex items-center justify-center mx-auto group">
+                  Masuk Aplikasi <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* Apa itu AKPD? */}
+          <section className="space-y-8">
+            <div className="text-center max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold text-slate-800 mb-4">Mengapa Mengisi AKPD?</h2>
+              <p className="text-slate-500 text-lg">Tiga alasan utama mengapa pengisian angket ini sangat penting bagi perkembangan akademis dan psikologis di sekolah.</p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors">
+                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-4"><Target className="w-6 h-6" /></div>
+                <h3 className="text-xl font-bold mb-2">Program Tepat Sasaran</h3>
+                <p className="text-slate-600 leading-relaxed">Jawabanmu menentukan topik bimbingan klasikal dan kelompok apa yang akan diadakan semester ini. Kami tidak akan membahas materi membosankan yang tidak kamu butuhkan.</p>
+              </div>
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors">
+                <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-4"><HeartHandshake className="w-6 h-6" /></div>
+                <h3 className="text-xl font-bold mb-2">Bantuan & Dukungan</h3>
+                <p className="text-slate-600 leading-relaxed">Punya masalah *toxic relationship*, kecanduan *gadget*, atau bingung karir? Melalui angket ini, Guru BK dapat menjemput bola dan memberikan dukungan psikologis yang kamu perlukan.</p>
+              </div>
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors">
+                <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-4"><ShieldCheck className="w-6 h-6" /></div>
+                <h3 className="text-xl font-bold mb-2">Kerahasiaan Terjamin</h3>
+                <p className="text-slate-600 leading-relaxed">Sistem ini memegang teguh "Asas Kerahasiaan" dalam dunia Konseling. Angket ini **bukanlah ujian**, tidak ada jawaban benar-salah, dan tidak akan mempengaruhi nilai rapormu sama sekali.</p>
+              </div>
+            </div>
+          </section>
+
+          {/* Tutorial Section */}
+          <section className="bg-blue-50 rounded-3xl p-8 md:p-12 border border-blue-100">
+            <h2 className="text-3xl font-bold text-[#002147] mb-8 flex items-center"><Info className="w-8 h-8 mr-3 text-blue-600"/> Tutorial Pengisian</h2>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="relative">
+                <div className="text-6xl font-black text-blue-200 absolute -top-6 -left-4 opacity-50 z-0">1</div>
+                <div className="relative z-10">
+                  <h4 className="font-bold text-lg mb-2">Login Data Diri</h4>
+                  <p className="text-sm text-slate-600">Pilih opsi <b>Login Siswa</b>. Masukkan Nama Lengkap, Nomor Induk (NIS), Kelas, dan Pondok/Asrama dengan benar.</p>
+                </div>
+              </div>
+              <div className="relative">
+                <div className="text-6xl font-black text-blue-200 absolute -top-6 -left-4 opacity-50 z-0">2</div>
+                <div className="relative z-10">
+                  <h4 className="font-bold text-lg mb-2">Baca Pernyataan</h4>
+                  <p className="text-sm text-slate-600">Terdapat 50 pernyataan seputar kehidupan Pribadi, Sosial, Belajar, dan Karir di era digital. Baca dengan perlahan.</p>
+                </div>
+              </div>
+              <div className="relative">
+                <div className="text-6xl font-black text-blue-200 absolute -top-6 -left-4 opacity-50 z-0">3</div>
+                <div className="relative z-10">
+                  <h4 className="font-bold text-lg mb-2">Beri Centang</h4>
+                  <p className="text-sm text-slate-600">Klik/Sentuh kotak untuk memberi <b className="text-blue-600">Centang Biru</b> HANYA pada pernyataan yang "Pernah/Sedang Kamu Alami". Kosongkan jika tidak sesuai.</p>
+                </div>
+              </div>
+              <div className="relative">
+                <div className="text-6xl font-black text-blue-200 absolute -top-6 -left-4 opacity-50 z-0">4</div>
+                <div className="relative z-10">
+                  <h4 className="font-bold text-lg mb-2">Kirim Jawaban</h4>
+                  <p className="text-sm text-slate-600">Jika sudah yakin, tekan tombol besar <b>"KIRIM JAWABAN SEKARANG"</b> di bagian paling bawah layar. Selesai!</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
 
   function renderKopSuratCetak(title, isCompact = false) {
     return (
@@ -1413,14 +1525,21 @@ export default function App() {
           );
       }
 
-      return Array.from({length: 48}).map((_, i) => {
-          const isMarked = scheduleMarks[`${rowId}-${i}`];
-          let bgClass = isMarked ? 'bg-[#3b82f6] text-white font-bold print:text-white print:bg-slate-600 print:print-color-adjust:exact -webkit-print-color-adjust:exact' : '';
-          return (
-              <td key={i} onClick={() => toggleScheduleMark(rowId, i)} className={`border border-slate-300 border-black text-center text-[9pt] print:text-[8pt] print:h-[14px] cursor-pointer hover:bg-blue-200 transition-colors ${bgClass}`}>
-                {isMarked ? 'X' : ''}
-              </td>
-          );
+      return weekGroups.map(group => {
+          if (group.type === 'holiday') {
+              return (
+                  <td key={`hol-${rowId}-${group.index}`} colSpan={group.span} className="border border-slate-300 border-black bg-red-500 print:bg-red-500 print:print-color-adjust:exact -webkit-print-color-adjust:exact"></td>
+              );
+          } else {
+              const i = group.index;
+              const isMarked = scheduleMarks[`${rowId}-${i}`];
+              let bgClass = isMarked ? 'bg-[#3b82f6] text-white font-bold print:text-white print:bg-slate-600 print:print-color-adjust:exact -webkit-print-color-adjust:exact' : '';
+              return (
+                  <td key={i} onClick={() => toggleScheduleMark(rowId, i)} className={`border border-slate-300 border-black text-center text-[9pt] print:text-[8pt] print:h-[14px] cursor-pointer hover:bg-blue-200 transition-colors ${bgClass}`}>
+                    {isMarked ? 'X' : ''}
+                  </td>
+              );
+          }
       });
     };
 
@@ -1428,8 +1547,8 @@ export default function App() {
         <tr className={`section-row ${bgClass} break-inside-avoid`}>
             <td className="text-center italic font-normal print:text-black border border-black">{no}</td>
             <td className="col-kegiatan text-white print:text-black border border-black">{title}</td>
-            {Array.from({length: 48}).map((_, i) => (
-                <td key={`sec-${title}-${i}`} className="border border-black p-0"></td>
+            {weekGroups.map(group => (
+                <td key={`sec-${title}-${group.index}`} colSpan={group.span} className={`border border-black p-0 ${group.type === 'holiday' ? 'bg-red-500 print:bg-red-500 print:print-color-adjust:exact -webkit-print-color-adjust:exact' : ''}`}></td>
             ))}
         </tr>
     );
@@ -1495,28 +1614,6 @@ export default function App() {
               <tr>{Array(12).fill(0).map((_, mi) => Array(4).fill(0).map((_, wi) => (<th key={`${mi}-${wi}`} className="week-header border-black print:text-black print:bg-slate-100">{wi + 1}</th>)))}</tr>
             </thead>
             <tbody>
-              {/* HOLIDAY ROW DENGAN MERGE CELL HORIZONTAL */}
-              <tr className="h-10 print:h-[20px] border-b-2 border-black break-inside-avoid bg-slate-50 print:bg-slate-100">
-                  <td colSpan="2" className="border-r border-black print:border-black text-right pr-3 font-bold text-[10px] print:text-[8px] uppercase align-middle text-slate-500 print:text-black">
-                      
-                  </td>
-                  {weekGroups.map(group => {
-                      if (group.type === 'holiday') {
-                          return (
-                              <td key={`head-hol-${group.index}`} colSpan={group.span} className="border border-black bg-red-500 print:bg-red-500 print:print-color-adjust:exact -webkit-print-color-adjust:exact align-middle p-0 text-center">
-                                  <div className="w-full h-full flex items-center justify-center overflow-hidden px-1">
-                                      <span className="whitespace-nowrap text-ellipsis overflow-hidden text-[9px] print:text-[6.5pt] font-bold text-white print:text-white uppercase tracking-wider drop-shadow-sm">
-                                          {group.text}
-                                      </span>
-                                  </div>
-                              </td>
-                          );
-                      } else {
-                          return <td key={`head-work-${group.index}`} className="border border-black bg-slate-50 print:bg-slate-100"></td>;
-                      }
-                  })}
-              </tr>
-
               {renderSectionHeader('1', 'PERSIAPAN', 'section-blue print:!bg-slate-400')}
               <tr className="break-inside-avoid"><td className="text-center text-xs border border-black"></td><td className="col-kegiatan border border-black">Pembagian tugas guru bimbingan dan konseling/konselor</td>{renderWeeks('prep1')}</tr>
               <tr className="break-inside-avoid"><td className="text-center text-xs border border-black"></td><td className="col-kegiatan border border-black">Assesmen kebutuhan (Angket Masalah Siswa)</td>{renderWeeks('prep2')}</tr>
@@ -1557,7 +1654,7 @@ export default function App() {
               <tr className="break-inside-avoid"><td className="text-center text-xs border border-black"></td><td className="col-kegiatan border border-black">Evaluasi Hasil</td>{renderWeeks('akun4')}</tr>
               <tr className="break-inside-avoid"><td className="text-center text-xs border border-black"></td><td className="col-kegiatan border border-black">Supervisi BK</td>{renderWeeks('akun2')}</tr>
               <tr className="break-inside-avoid"><td className="text-center text-xs border border-black"></td><td className="col-kegiatan border border-black">Pembuatan Laporan</td>{renderWeeks('akun3')}</tr>
-              
+
               {/* HOLIDAY ROWS SECTION AT THE BOTTOM */}
               {holidays.length > 0 && renderSectionHeader('', 'AGENDA / HARI LIBUR NASIONAL', 'bg-red-100 print:!bg-red-200 text-red-800')}
               {holidays.map((h, idx) => {
@@ -1816,8 +1913,12 @@ export default function App() {
 
   function renderLoginScreen() {
     return (
-      <div className="min-h-screen bg-[#f4f6f9] flex items-center justify-center p-4 font-sans">
-        <div className="bg-white rounded-xl shadow-lg w-full max-w-md overflow-hidden border border-slate-100">
+      <div className="min-h-screen bg-[#f4f6f9] flex items-center justify-center p-4 font-sans relative">
+        <button onClick={() => setShowLandingPage(true)} className="absolute top-6 left-6 text-slate-500 hover:text-slate-800 flex items-center text-sm font-semibold transition-colors bg-white px-4 py-2 rounded-full shadow-sm">
+           <ArrowLeft className="w-4 h-4 mr-2" /> Kembali ke Tutorial
+        </button>
+
+        <div className="bg-white rounded-xl shadow-lg w-full max-w-md overflow-hidden border border-slate-100 mt-12 sm:mt-0">
           <div className="bg-[#002147] p-8 text-center text-white relative flex flex-col items-center">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-bl-full"></div>
             <BrandLogo className="w-12 h-12 mb-3 drop-shadow-md" />
@@ -1955,9 +2056,10 @@ export default function App() {
   }
 
   // =========================================================================
-  // 6. MAIN RENDER / APP ROUTER
+  // 6. MAIN RENDER / ROUTING
   // =========================================================================
   if (isAppLoading) return renderLoadingScreen();
+  if (showLandingPage && !user) return renderLandingPage();
   if (!user) return renderLoginScreen();
   if (user.role === 'siswa') return renderSiswaScreen();
   return renderAdminScreen();
